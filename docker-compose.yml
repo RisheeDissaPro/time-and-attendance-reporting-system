@@ -1,0 +1,87 @@
+name: securelock-attendance
+
+x-db-credentials: &db-credentials
+  POSTGRES_USER: ${POSTGRES_USER:-attendance_admin}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change_me_attendance}
+  POSTGRES_DB: ${POSTGRES_DB:-attendance}
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      <<: *db-credentials
+      METABASE_READER_PASSWORD: ${METABASE_READER_PASSWORD:-change_me_reader}
+      TZ: ${TZ:-UTC}
+      PGTZ: ${TZ:-UTC}
+    ports:
+      - "${POSTGRES_HOST_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Init scripts run in name order, only when the data volume is empty.
+      - ./db/init_databases.sh:/docker-entrypoint-initdb.d/00_init_databases.sh:ro
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ./db/reporting_views.sql:/docker-entrypoint-initdb.d/02_reporting_views.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  etl:
+    build:
+      context: .
+      dockerfile: docker/etl.Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      <<: *db-credentials
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: "5432"
+      OVERTIME_THRESHOLD_HOURS: ${OVERTIME_THRESHOLD_HOURS:-10}
+      ROSTER_TOLERANCE_MINUTES: ${ROSTER_TOLERANCE_MINUTES:-30}
+      ETL_CRON_SCHEDULE: ${ETL_CRON_SCHEDULE:-0 2 * * *}
+      DATA_DIR: /data
+      ATTENDANCE_CSV_PATH: /data/attendance_export.csv
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      TZ: ${TZ:-UTC}
+    volumes:
+      - ./data:/data
+
+  metabase:
+    image: metabase/metabase:${METABASE_VERSION:-v0.64.2}
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_HOST: postgres
+      MB_DB_PORT: "5432"
+      MB_DB_DBNAME: metabase
+      MB_DB_USER: ${POSTGRES_USER:-attendance_admin}
+      MB_DB_PASS: ${POSTGRES_PASSWORD:-change_me_attendance}
+      MB_EMAIL_SMTP_HOST: ${MB_EMAIL_SMTP_HOST:-mailpit}
+      MB_EMAIL_SMTP_PORT: ${MB_EMAIL_SMTP_PORT:-1025}
+      MB_EMAIL_SMTP_SECURITY: ${MB_EMAIL_SMTP_SECURITY:-none}
+      MB_EMAIL_SMTP_USERNAME: ${MB_EMAIL_SMTP_USERNAME:-}
+      MB_EMAIL_SMTP_PASSWORD: ${MB_EMAIL_SMTP_PASSWORD:-}
+      MB_EMAIL_FROM_ADDRESS: ${MB_EMAIL_FROM_ADDRESS:-reports@securelock.example}
+      JAVA_TIMEZONE: ${TZ:-UTC}
+    ports:
+      - "${METABASE_PORT:-3000}:3000"
+
+  # Optional local SMTP sink for testing emailed reports and alerts:
+  #   docker compose --profile mail up
+  # Captured emails are visible at http://localhost:8025
+  mailpit:
+    image: axllent/mailpit:latest
+    profiles: ["mail"]
+    restart: unless-stopped
+    ports:
+      - "8025:8025"
+
+volumes:
+  pgdata:

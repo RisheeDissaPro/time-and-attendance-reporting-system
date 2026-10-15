@@ -1,0 +1,3 @@
+SHELL=/bin/sh
+# Nightly attendance ETL. The schedule placeholder is filled from ETL_CRON_SCHEDULE at start.
+__SCHEDULE__ root . /app/cron.env && cd /app && (/usr/local/bin/python -m db.seed && /usr/local/bin/python -m etl.run_etl) >> /proc/1/fd/1 2>&1

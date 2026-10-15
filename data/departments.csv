@@ -1,0 +1,6 @@
+department_id,name,business_unit
+1,Assembly,Lock Manufacturing
+2,Machining,Lock Manufacturing
+3,Quality Control,Quality Assurance
+4,Logistics,Supply Chain
+5,Maintenance,Engineering Services

@@ -1,0 +1,51 @@
+employee_id,name,department_id,role,manager_id
+1001,Emma Kumar,1,Assembly Supervisor,
+1002,Mateo Kumar,1,Assembly Technician,1001
+1003,Kenji Haddad,1,Line Operator,1001
+1004,James Müller,1,Line Operator,1001
+1005,Mei Brown,1,Line Operator,1001
+1006,Diego Reddy,1,Line Operator,1001
+1007,Noah Kumar,1,Line Operator,1001
+1008,Liam Okafor,1,Line Operator,1001
+1009,Daniel Patel,1,Line Operator,1001
+1010,Olivia Nguyen,1,Assembly Technician,1001
+1011,Rahul Wilson,2,Machining Supervisor,
+1012,Liam Nguyen,2,Machine Operator,1011
+1013,Kenji Patel,2,Machine Operator,1011
+1014,James Sharma,2,CNC Machinist,1011
+1015,Ethan Müller,2,Machine Operator,1011
+1016,Mateo Haddad,2,CNC Machinist,1011
+1017,Mateo Rossi,2,Machine Operator,1011
+1018,Leila Ahmed,2,Machine Operator,1011
+1019,Fatima Kumar,2,CNC Machinist,1011
+1020,Omar Chen,2,CNC Machinist,1011
+1021,Arjun Silva,3,Quality Control Supervisor,
+1022,Mei Haddad,3,Quality Inspector,1021
+1023,Wei Novak,3,QA Technician,1021
+1024,Ananya Kumar,3,Quality Inspector,1021
+1025,Vikram Smith,3,Quality Inspector,1021
+1026,Vikram Taylor,3,Quality Inspector,1021
+1027,Kenji Nguyen,3,QA Technician,1021
+1028,Leila Silva,3,Quality Inspector,1021
+1029,Omar Patel,3,QA Technician,1021
+1030,Vikram Okafor,3,Quality Inspector,1021
+1031,Leila Wilson,4,Logistics Supervisor,
+1032,Noah Brown,4,Warehouse Associate,1031
+1033,Liam Haddad,4,Forklift Operator,1031
+1034,Olivia Garcia,4,Forklift Operator,1031
+1035,Hannah Taylor,4,Warehouse Associate,1031
+1036,Liam Müller,4,Forklift Operator,1031
+1037,Priya Novak,4,Warehouse Associate,1031
+1038,Diego Müller,4,Forklift Operator,1031
+1039,Leila Garcia,4,Forklift Operator,1031
+1040,Isabella Silva,4,Warehouse Associate,1031
+1041,Chloe Novak,5,Maintenance Supervisor,
+1042,Lucas Ahmed,5,Maintenance Technician,1041
+1043,James Iyer,5,Maintenance Technician,1041
+1044,Ethan Ahmed,5,Electrician,1041
+1045,Zara Kumar,5,Electrician,1041
+1046,Fatima Silva,5,Electrician,1041
+1047,Rahul Kumar,5,Electrician,1041
+1048,Maria Kumar,5,Maintenance Technician,1041
+1049,James Kumar,5,Maintenance Technician,1041
+1050,Omar Rossi,5,Electrician,1041
